@@ -1,19 +1,19 @@
-import React from "react";
-import Index from "./pages/page";
-
-const appStyle = {
-  background: "#ffbdfd",
-  minHeight: "100%"
-};
+import React from 'react'
+import { Menu } from 'semantic-ui-react'
+import Exam from './pages/exam'
 
 class App extends React.Component {
   render() {
     return (
-      <div style={appStyle}>
-        <Index />
-      </div>
-    );
+      <>
+        <Menu inverted attached>
+          <Menu.Item header>Kuding</Menu.Item>
+        </Menu>
+
+        <Exam />
+      </>
+    )
   }
 }
 
-export default App;
+export default App
