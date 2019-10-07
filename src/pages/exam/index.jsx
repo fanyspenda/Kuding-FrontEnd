@@ -1,5 +1,5 @@
-import React from "react";
-import axios from "axios";
+import React from 'react'
+import axios from 'axios'
 import {
   Grid,
   TextArea,
@@ -8,43 +8,42 @@ import {
   Segment,
   Input,
   Label
-} from "semantic-ui-react";
+} from 'semantic-ui-react'
 
 export default class Exam extends React.Component {
   state = {
-    script: "",
-    result: "",
-    answer: 5
-  };
+    script: '',
+    result: '',
+    answer: 100
+  }
 
   handleChange = e => {
     this.setState({
       script: e.target.value
-    });
-  };
+    })
+  }
 
   handleSubmit = () => {
     axios
-      .post("http://192.168.43.185:3000", {
+      .post('https://kuding-backend.herokuapp.com', {
         script: this.state.script
       })
       .then(res => {
         this.setState({
-          result: res.data,
-          answer: 5
-        });
-      });
-  };
+          result: res.data
+        })
+      })
+  }
 
   Checker = props => {
-    if (this.state.result === "") {
-      return null;
+    if (this.state.result === '') {
+      return null
     } else if (props.result === this.state.answer) {
-      return <Label color="green">kode benar!</Label>;
+      return <Label color="green">kode benar!</Label>
     } else if (props.result !== this.state.answer) {
-      return <Label color="red">kode salah!</Label>;
+      return <Label color="red">kode salah!</Label>
     }
-  };
+  }
 
   render() {
     return (
@@ -52,8 +51,7 @@ export default class Exam extends React.Component {
         <Grid.Row>
           <Grid.Column width="4">
             <Segment basic>
-              buat fungsi dengan 2 parameter yang mereturn hasil kali dari 2
-              parameter tersebut!
+              buat fungsi yang mereturn hasil perkalian dari 5 * 20
             </Segment>
           </Grid.Column>
 
@@ -81,6 +79,6 @@ export default class Exam extends React.Component {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    );
+    )
   }
 }
