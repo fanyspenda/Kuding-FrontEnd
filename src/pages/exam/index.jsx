@@ -1,5 +1,11 @@
-import React from 'react'
-import axios from 'axios'
+import React from "react";
+import axios from "axios";
+
+import AceEditor from "react-ace";
+import "brace/mode/javascript";
+import "brace/theme/monokai";
+import "brace/ext/language_tools";
+
 import {
   Grid,
   TextArea,
@@ -8,42 +14,42 @@ import {
   Segment,
   Input,
   Label
-} from 'semantic-ui-react'
+} from "semantic-ui-react";
 
 export default class Exam extends React.Component {
   state = {
-    script: '',
-    result: '',
+    script: "",
+    result: "",
     answer: 100
-  }
+  };
 
-  handleChange = e => {
+  handleChange = value => {
     this.setState({
-      script: e.target.value
-    })
-  }
+      script: value
+    });
+  };
 
   handleSubmit = () => {
     axios
-      .post('https://kuding-backend.herokuapp.com', {
+      .post("https://kuding-backend.herokuapp.com", {
         script: this.state.script
       })
       .then(res => {
         this.setState({
           result: res.data
-        })
-      })
-  }
+        });
+      });
+  };
 
   Checker = props => {
-    if (this.state.result === '') {
-      return null
+    if (this.state.result === "") {
+      return null;
     } else if (props.result === this.state.answer) {
-      return <Label color="green">kode benar!</Label>
+      return <Label color="green">kode benar!</Label>;
     } else if (props.result !== this.state.answer) {
-      return <Label color="red">kode salah!</Label>
+      return <Label color="red">kode salah!</Label>;
     }
-  }
+  };
 
   render() {
     return (
@@ -59,10 +65,23 @@ export default class Exam extends React.Component {
             <Segment basic>
               <Form>
                 <Form.Field>
-                  <TextArea
-                    rows="17"
-                    placeholder="Ketikkan script mu disini..."
+                  <AceEditor
+                    width="12"
+                    placeholder="Ketikkan Kodemu di sini"
+                    mode="javascript"
+                    theme="monokai"
+                    name="editor"
                     onChange={this.handleChange}
+                    fontSize={14}
+                    showPrintMargin={false}
+                    highlightActiveLine={true}
+                    value={this.state.script}
+                    setOptions={{
+                      enableBasicAutocompletion: true,
+                      enableLiveAutocompletion: true,
+                      enableSnippets: true,
+                      showLineNumbers: true
+                    }}
                   />
                 </Form.Field>
                 <Form.Field>
@@ -79,6 +98,6 @@ export default class Exam extends React.Component {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    )
+    );
   }
 }
