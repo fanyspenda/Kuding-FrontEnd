@@ -8,19 +8,60 @@ import "brace/ext/language_tools";
 
 import {
   Grid,
-  TextArea,
   Button,
   Form,
   Segment,
   Input,
-  Label
+  Label,
+  Dropdown
 } from "semantic-ui-react";
 
 export default class Exam extends React.Component {
   state = {
     script: "",
     result: "",
-    answer: 100
+    selectedTestCase: "",
+    testCase: [
+      {
+        key: 0,
+        text: "test case 1",
+        value: 0,
+        error: false,
+        label: {
+          color: "red"
+        },
+
+        input: 2,
+        expectedoutput: 90,
+        output: 90
+      },
+      {
+        key: 1,
+        text: "test case 2",
+        value: 1,
+        error: false,
+        label: {
+          color: "green"
+        },
+
+        input: 5,
+        expectedoutput: 50,
+        output: 50
+      },
+      {
+        key: 2,
+        text: "test case 3",
+        value: 2,
+        error: false,
+        label: {
+          color: "red"
+        },
+
+        input: 10,
+        expectedoutput: 100,
+        output: 250
+      }
+    ]
   };
 
   handleChange = value => {
@@ -41,6 +82,14 @@ export default class Exam extends React.Component {
       });
   };
 
+  handleDropdownChange = (e, data) => {
+    // console.log(data.value);
+    this.setState({
+      selectedTestCase: data.value
+    });
+    this.testCaseChecker(data.value);
+  };
+
   Checker = props => {
     if (this.state.result === "") {
       return null;
@@ -49,6 +98,24 @@ export default class Exam extends React.Component {
     } else if (props.result !== this.state.answer) {
       return <Label color="red">kode salah!</Label>;
     }
+  };
+
+  testCaseChecker = index => {
+    let testCaseCopy = this.state.testCase;
+    if (
+      this.state.testCase[index].output !==
+      this.state.testCase[index].expectedoutput
+    ) {
+      testCaseCopy[index].error = true;
+      testCaseCopy[index].label.color = "red";
+    } else {
+      testCaseCopy[index].error = false;
+      testCaseCopy[index].label.color = "green";
+    }
+
+    this.setState({
+      testCase: testCaseCopy
+    });
   };
 
   render() {
@@ -94,6 +161,69 @@ export default class Exam extends React.Component {
                   <this.Checker result={this.state.result} />
                 </Form.Field>
               </Form>
+              <br />
+              {/* test cases start here */}
+              <Grid columns="2" divided relaxed>
+                <Grid.Row>
+                  <Grid.Column width="4">
+                    <Dropdown
+                      placeholder="Select Test Case.."
+                      fluid
+                      selection
+                      button
+                      options={this.state.testCase}
+                      onChange={this.handleDropdownChange}
+                    />
+                  </Grid.Column>
+                  <Grid.Column width="12">
+                    <Form>
+                      <Form.Field>
+                        <Input
+                          label="Input"
+                          value={
+                            this.state.selectedTestCase !== ""
+                              ? this.state.testCase[this.state.selectedTestCase]
+                                  .input
+                              : ""
+                          }
+                        />
+                      </Form.Field>
+
+                      <Form.Field>
+                        <Input
+                          label="Expected Output"
+                          value={
+                            this.state.selectedTestCase !== ""
+                              ? this.state.testCase[this.state.selectedTestCase]
+                                  .expectedoutput
+                              : ""
+                          }
+                        />
+                      </Form.Field>
+
+                      <Form.Field
+                        error={
+                          this.state.selectedTestCase !== ""
+                            ? this.state.testCase[this.state.selectedTestCase]
+                                .error
+                            : false
+                        }
+                      >
+                        <Input
+                          label="Output"
+                          value={
+                            this.state.selectedTestCase !== ""
+                              ? this.state.testCase[this.state.selectedTestCase]
+                                  .output
+                              : ""
+                          }
+                        />
+                      </Form.Field>
+                    </Form>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+              {/* test Cases End Here */}
             </Segment>
           </Grid.Column>
         </Grid.Row>
