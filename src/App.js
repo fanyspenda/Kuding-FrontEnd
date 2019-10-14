@@ -1,6 +1,6 @@
-import React from 'react'
-import { Menu } from 'semantic-ui-react'
-import Exam from './pages/exam'
+import React from "react";
+import { Menu } from "semantic-ui-react";
+import Exam from "./pages/exam";
 
 class App extends React.Component {
   render() {
@@ -9,11 +9,10 @@ class App extends React.Component {
         <Menu inverted attached>
           <Menu.Item header>Kuding</Menu.Item>
         </Menu>
-
         <Exam />
       </>
-    )
+    );
   }
 }
 
-export default App
+export default App;
