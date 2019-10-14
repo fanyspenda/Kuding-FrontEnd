@@ -12,7 +12,6 @@ import {
   Form,
   Segment,
   Input,
-  Label,
   Dropdown
 } from "semantic-ui-react";
 
@@ -20,46 +19,22 @@ export default class Exam extends React.Component {
   state = {
     script: "",
     result: "",
-    selectedTestCase: "",
-    testCase: [
+    selectedTestCase: null,
+    testCases: [
       {
-        key: 0,
-        text: "test case 1",
-        value: 0,
-        error: false,
-        label: {
-          color: "red"
-        },
-
-        input: 2,
-        expectedoutput: 90,
+        input: 8,
+        expectedoutput: 64,
         output: 90
       },
       {
-        key: 1,
-        text: "test case 2",
-        value: 1,
-        error: false,
-        label: {
-          color: "green"
-        },
-
         input: 5,
-        expectedoutput: 50,
+        expectedoutput: 25,
         output: 50
       },
       {
-        key: 2,
-        text: "test case 3",
-        value: 2,
-        error: false,
-        label: {
-          color: "red"
-        },
-
         input: 10,
         expectedoutput: 100,
-        output: 250
+        output: 100
       }
     ]
   };
@@ -83,48 +58,30 @@ export default class Exam extends React.Component {
   };
 
   handleDropdownChange = (e, data) => {
-    // console.log(data.value);
     this.setState({
-      selectedTestCase: data.value
-    });
-    this.testCaseChecker(data.value);
-  };
-
-  Checker = props => {
-    if (this.state.result === "") {
-      return null;
-    } else if (props.result === this.state.answer) {
-      return <Label color="green">kode benar!</Label>;
-    } else if (props.result !== this.state.answer) {
-      return <Label color="red">kode salah!</Label>;
-    }
-  };
-
-  testCaseChecker = index => {
-    let testCaseCopy = this.state.testCase;
-    if (
-      this.state.testCase[index].output !==
-      this.state.testCase[index].expectedoutput
-    ) {
-      testCaseCopy[index].error = true;
-      testCaseCopy[index].label.color = "red";
-    } else {
-      testCaseCopy[index].error = false;
-      testCaseCopy[index].label.color = "green";
-    }
-
-    this.setState({
-      testCase: testCaseCopy
+      selectedTestCase: this.state.testCases[data.value]
     });
   };
+
+  isTestCaseError = testCase => testCase.expectedoutput !== testCase.output;
+
+  renderOptions = () =>
+    this.state.testCases.map((testCase, index) => ({
+      text: `test case ${index + 1}`,
+      value: index,
+      label: {
+        color: this.isTestCaseError(testCase) ? "red" : "green"
+      }
+    }));
 
   render() {
+    const { script, result, selectedTestCase } = this.state;
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
           <Grid.Column width="4">
             <Segment basic>
-              buat fungsi yang mereturn hasil perkalian dari 5 * 20
+              buat fungsi yang mereturn pangkat 2 dari parameter
             </Segment>
           </Grid.Column>
 
@@ -142,7 +99,7 @@ export default class Exam extends React.Component {
                     fontSize={14}
                     showPrintMargin={false}
                     highlightActiveLine={true}
-                    value={this.state.script}
+                    value={script}
                     setOptions={{
                       enableBasicAutocompletion: true,
                       enableLiveAutocompletion: true,
@@ -157,8 +114,7 @@ export default class Exam extends React.Component {
                   </Button>
                 </Form.Field>
                 <Form.Field>
-                  <Input label="Result" inverted value={this.state.result} />
-                  <this.Checker result={this.state.result} />
+                  <Input label="Result" inverted value={result} />
                 </Form.Field>
               </Form>
               <br />
@@ -171,7 +127,7 @@ export default class Exam extends React.Component {
                       fluid
                       selection
                       button
-                      options={this.state.testCase}
+                      options={this.renderOptions()}
                       onChange={this.handleDropdownChange}
                     />
                   </Grid.Column>
@@ -180,12 +136,7 @@ export default class Exam extends React.Component {
                       <Form.Field>
                         <Input
                           label="Input"
-                          value={
-                            this.state.selectedTestCase !== ""
-                              ? this.state.testCase[this.state.selectedTestCase]
-                                  .input
-                              : ""
-                          }
+                          value={selectedTestCase && selectedTestCase.input}
                         />
                       </Form.Field>
 
@@ -193,30 +144,20 @@ export default class Exam extends React.Component {
                         <Input
                           label="Expected Output"
                           value={
-                            this.state.selectedTestCase !== ""
-                              ? this.state.testCase[this.state.selectedTestCase]
-                                  .expectedoutput
-                              : ""
+                            selectedTestCase && selectedTestCase.expectedoutput
                           }
                         />
                       </Form.Field>
 
                       <Form.Field
                         error={
-                          this.state.selectedTestCase !== ""
-                            ? this.state.testCase[this.state.selectedTestCase]
-                                .error
-                            : false
+                          selectedTestCase &&
+                          this.isTestCaseError(selectedTestCase)
                         }
                       >
                         <Input
                           label="Output"
-                          value={
-                            this.state.selectedTestCase !== ""
-                              ? this.state.testCase[this.state.selectedTestCase]
-                                  .output
-                              : ""
-                          }
+                          value={selectedTestCase && selectedTestCase.output}
                         />
                       </Form.Field>
                     </Form>
