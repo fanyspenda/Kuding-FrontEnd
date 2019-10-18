@@ -18,25 +18,8 @@ import {
 export default class Exam extends React.Component {
   state = {
     script: "",
-    result: "",
     selectedTestCase: null,
-    testCases: [
-      {
-        input: 8,
-        expectedoutput: 64,
-        output: 90
-      },
-      {
-        input: 5,
-        expectedoutput: 25,
-        output: 50
-      },
-      {
-        input: 10,
-        expectedoutput: 100,
-        output: 100
-      }
-    ]
+    testCases: []
   };
 
   handleChange = value => {
@@ -52,7 +35,7 @@ export default class Exam extends React.Component {
       })
       .then(res => {
         this.setState({
-          result: res.data
+          testCases: res.data
         });
       });
   };
@@ -63,7 +46,7 @@ export default class Exam extends React.Component {
     });
   };
 
-  isTestCaseError = testCase => testCase.expectedoutput !== testCase.output;
+  isTestCaseError = testCase => testCase.expected_output !== testCase.output;
 
   renderOptions = () =>
     this.state.testCases.map((testCase, index) => ({
@@ -75,7 +58,7 @@ export default class Exam extends React.Component {
     }));
 
   render() {
-    const { script, result, selectedTestCase } = this.state;
+    const { script, selectedTestCase } = this.state;
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
@@ -113,9 +96,6 @@ export default class Exam extends React.Component {
                     Run Test
                   </Button>
                 </Form.Field>
-                <Form.Field>
-                  <Input label="Result" inverted value={result} />
-                </Form.Field>
               </Form>
               <br />
               {/* test cases start here */}
@@ -144,7 +124,7 @@ export default class Exam extends React.Component {
                         <Input
                           label="Expected Output"
                           value={
-                            selectedTestCase && selectedTestCase.expectedoutput
+                            selectedTestCase && selectedTestCase.expected_output
                           }
                         />
                       </Form.Field>
