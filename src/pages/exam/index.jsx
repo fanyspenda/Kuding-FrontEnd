@@ -19,7 +19,8 @@ export default class Exam extends React.Component {
   state = {
     script: "",
     selectedTestCase: null,
-    testCases: []
+    testCases: [],
+    isLoading: false
   };
 
   handleChange = value => {
@@ -29,13 +30,22 @@ export default class Exam extends React.Component {
   };
 
   handleSubmit = () => {
+    this.setState({
+      isLoading: true
+    });
     axios
       .post("https://kuding-backend.herokuapp.com", {
         script: this.state.script
       })
       .then(res => {
         this.setState({
+          isLoading: true,
           testCases: res.data
+        });
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false
         });
       });
   };
@@ -58,7 +68,7 @@ export default class Exam extends React.Component {
     }));
 
   render() {
-    const { script, selectedTestCase } = this.state;
+    const { script, selectedTestCase, isLoading } = this.state;
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
@@ -69,7 +79,7 @@ export default class Exam extends React.Component {
           </Grid.Column>
 
           <Grid.Column width="12">
-            <Segment basic>
+            <Segment basic loading={isLoading}>
               <Form>
                 <Form.Field>
                   <AceEditor
@@ -97,8 +107,10 @@ export default class Exam extends React.Component {
                   </Button>
                 </Form.Field>
               </Form>
-              <br />
-              {/* test cases start here */}
+            </Segment>
+
+            {/* test cases start here */}
+            <Segment disabled={isLoading} loading={isLoading}>
               <Grid columns="2" divided relaxed>
                 <Grid.Row>
                   <Grid.Column width="4">
@@ -144,8 +156,8 @@ export default class Exam extends React.Component {
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-              {/* test Cases End Here */}
             </Segment>
+            {/* test Cases End Here */}
           </Grid.Column>
         </Grid.Row>
       </Grid>
