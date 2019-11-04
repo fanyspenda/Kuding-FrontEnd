@@ -19,7 +19,8 @@ export default class Exam extends React.Component {
   state = {
     script: "",
     selectedTestCase: null,
-    testCases: []
+    testCases: this.props.location.state.task.test_cases,
+    isLoading: false
   };
 
   handleChange = value => {
@@ -29,13 +30,25 @@ export default class Exam extends React.Component {
   };
 
   handleSubmit = () => {
+    this.setState({
+      isLoading: true
+    });
     axios
-      .post("https://kuding-backend.herokuapp.com", {
-        script: this.state.script
-      })
+      .post(
+        `https://kuding-backend.herokuapp.com/task/${this.props.location.state.task._id}/submit`,
+        {
+          script: this.state.script
+        }
+      )
       .then(res => {
         this.setState({
+          isLoading: true,
           testCases: res.data
+        });
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false
         });
       });
   };
@@ -48,28 +61,28 @@ export default class Exam extends React.Component {
 
   isTestCaseError = testCase => testCase.expected_output !== testCase.output;
 
-  renderOptions = () =>
-    this.state.testCases.map((testCase, index) => ({
+  renderOptions = () => {
+    return this.state.testCases.map((testCase, index) => ({
       text: `test case ${index + 1}`,
       value: index,
       label: {
         color: this.isTestCaseError(testCase) ? "red" : "green"
       }
     }));
+  };
 
   render() {
-    const { script, selectedTestCase } = this.state;
+    const { script, selectedTestCase, isLoading } = this.state;
+    const { task } = this.props.location.state;
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
           <Grid.Column width="4">
-            <Segment basic>
-              buat fungsi yang mereturn pangkat 2 dari parameter
-            </Segment>
+            <Segment basic>{task.description}</Segment>
           </Grid.Column>
 
           <Grid.Column width="12">
-            <Segment basic>
+            <Segment basic loading={isLoading}>
               <Form>
                 <Form.Field>
                   <AceEditor
@@ -97,8 +110,10 @@ export default class Exam extends React.Component {
                   </Button>
                 </Form.Field>
               </Form>
-              <br />
-              {/* test cases start here */}
+            </Segment>
+
+            {/* test cases start here */}
+            <Segment disabled={isLoading} loading={isLoading}>
               <Grid columns="2" divided relaxed>
                 <Grid.Row>
                   <Grid.Column width="4">
@@ -144,8 +159,8 @@ export default class Exam extends React.Component {
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
-              {/* test Cases End Here */}
             </Segment>
+            {/* test Cases End Here */}
           </Grid.Column>
         </Grid.Row>
       </Grid>
