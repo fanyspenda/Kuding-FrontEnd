@@ -19,7 +19,7 @@ export default class Exam extends React.Component {
   state = {
     script: "",
     selectedTestCase: null,
-    testCases: [],
+    testCases: this.props.location.state.task.test_cases,
     isLoading: false
   };
 
@@ -34,9 +34,12 @@ export default class Exam extends React.Component {
       isLoading: true
     });
     axios
-      .post("https://kuding-backend.herokuapp.com", {
-        script: this.state.script
-      })
+      .post(
+        `https://kuding-backend.herokuapp.com/task/${this.props.location.state.task._id}/submit`,
+        {
+          script: this.state.script
+        }
+      )
       .then(res => {
         this.setState({
           isLoading: true,
@@ -58,24 +61,24 @@ export default class Exam extends React.Component {
 
   isTestCaseError = testCase => testCase.expected_output !== testCase.output;
 
-  renderOptions = () =>
-    this.state.testCases.map((testCase, index) => ({
+  renderOptions = () => {
+    return this.state.testCases.map((testCase, index) => ({
       text: `test case ${index + 1}`,
       value: index,
       label: {
         color: this.isTestCaseError(testCase) ? "red" : "green"
       }
     }));
+  };
 
   render() {
     const { script, selectedTestCase, isLoading } = this.state;
+    const { task } = this.props.location.state;
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
           <Grid.Column width="4">
-            <Segment basic>
-              buat fungsi yang mereturn pangkat 2 dari parameter
-            </Segment>
+            <Segment basic>{task.description}</Segment>
           </Grid.Column>
 
           <Grid.Column width="12">
