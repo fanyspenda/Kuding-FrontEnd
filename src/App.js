@@ -13,6 +13,10 @@ class App extends React.Component {
 
   handleMenuClick = (e, { name }) => {
     this.setState({ activeItem: name });
+
+    if (this.state.activeItem === true) {
+      return <CreateTask />;
+    }
   };
 
   render() {
