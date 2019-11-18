@@ -13,7 +13,11 @@ export default class ListTask extends React.Component {
       isLoading: true
     });
     axios
-      .get("https://kuding-backend.herokuapp.com/task")
+      .get("https://kuding-backend.herokuapp.com/task", {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
       .then(res => {
         this.setState({
           tasks: res.data

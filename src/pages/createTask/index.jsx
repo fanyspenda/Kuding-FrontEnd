@@ -16,6 +16,12 @@ export default class CreateTask extends React.Component {
     isLoading: false
   };
 
+  componentWillMount = () => {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/login");
+    }
+  };
+
   addTestCase = () => {
     let newTestCase = {
       input: 10,
