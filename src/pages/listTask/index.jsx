@@ -39,7 +39,11 @@ export default class ListTask extends React.Component {
       isLoading: true
     });
     axios
-      .delete("https://kuding-backend.herokuapp.com/task/" + _id)
+      .delete("https://kuding-backend.herokuapp.com/task/" + _id, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
       .finally(() => {
         this.getList();
         alert("data berhasil dihapus!");
@@ -56,11 +60,13 @@ export default class ListTask extends React.Component {
         <Table celled striped>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell colspan="4">Tasks</Table.HeaderCell>
+              <Table.HeaderCell colSpan="4">
+                <h1>Tasks</h1>
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           {this.state.tasks.map((task, index) => (
-            <Table.Body>
+            <Table.Body key={task._id}>
               <Table.Row>
                 <Table.Cell collapsing>
                   <Icon name="file code" />

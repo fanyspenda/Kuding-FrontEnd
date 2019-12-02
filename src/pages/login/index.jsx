@@ -1,8 +1,9 @@
 import React from "react";
-import { Segment, Form as SemanticForm, Card, Button } from "semantic-ui-react";
+import { Segment, Card, Button } from "semantic-ui-react";
 import { Formik, Form } from "formik";
 import axios from "axios";
 import Input from "../../components/Input";
+import * as yup from "yup";
 
 export default class Login extends React.Component {
   login = (username, password) => {
@@ -22,19 +23,26 @@ export default class Login extends React.Component {
   };
 
   render() {
+    const loginSchema = yup.object().shape({
+      username: yup.string().required("Username Harus Diisi!"),
+      password: yup.string().required("Password Harus Diisi!")
+    });
+
     return (
       <Formik
         initialValues={{ username: "", password: "" }}
+        validationSchema={loginSchema}
+        // validate={values => {
+        //   const errors = {};
+
+        //   if (values.username === "") {
+        //     errors.username = "username kosong!";
+        //   } else if (values.password === "") {
+        //     errors.password = "password belum diisi!";
+        //   }
+        //   return errors;
+        // }}
         onSubmit={values => this.login(values.username, values.password)}
-        validate={values => {
-          const errors = {};
-          if (values.username === "") {
-            errors.username = "username kosong!";
-          } else if (values.password === "") {
-            errors.password = "password belum diisi!";
-          }
-          return errors;
-        }}
       >
         {({ isSubmitting }) => (
           <Segment basic>
@@ -45,26 +53,31 @@ export default class Login extends React.Component {
             <Card centered>
               <Segment basic>
                 <Form>
-                  <SemanticForm>
-                    <SemanticForm.Field>
-                      <label>Username</label>
-                      <Input name="username" type="text" />
-                    </SemanticForm.Field>
+                  <div>
+                    <label>
+                      <b>Username</b>
+                    </label>
                     <br />
-                    <SemanticForm.Field>
-                      <label>Password</label>
-                      <Input name="password" type="password" />
-                    </SemanticForm.Field>
-
-                    <Button
-                      fluid
-                      type="submit"
-                      disabled={isSubmitting}
-                      color="green"
-                    >
-                      Submit
-                    </Button>
-                  </SemanticForm>
+                    <Input name="username" type="text" />
+                  </div>
+                  <br />
+                  <div>
+                    <label>
+                      <b>Password</b>
+                    </label>
+                    <br />
+                    <Input name="password" type="password" />
+                  </div>
+                  <br />
+                  <br />
+                  <Button
+                    fluid
+                    type="submit"
+                    disabled={isSubmitting}
+                    color="green"
+                  >
+                    Submit
+                  </Button>
                 </Form>
               </Segment>
             </Card>

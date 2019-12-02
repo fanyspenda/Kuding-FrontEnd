@@ -9,19 +9,43 @@ import Login from "./pages/login";
 
 class App extends React.Component {
   state = {
-    activeItem: false
+    activeItem: "",
+    isLoggedIn: null
   };
 
-  handleMenuClick = (e, { name }) => {
-    this.setState({ activeItem: name });
+  componentDidMount = () => {
+    let checkLogin = setInterval(() => {
+      this.checkToken();
+      console.log("login dicheck");
+      if (this.state.isLoggedIn === true) {
+        clearInterval(checkLogin);
+        console.log("checking dihentikan");
+      }
+    }, 1000);
+  };
 
-    if (this.state.activeItem === true) {
-      return <CreateTask />;
-    }
+  handleMenuClick = name => {
+    this.setState({ activeItem: name });
   };
 
   handleLogoutClick = () => {
     localStorage.removeItem("token");
+    this.setState({
+      isLoggedIn: false
+    });
+    this.componentDidMount();
+  };
+
+  checkToken = () => {
+    if (localStorage.getItem("token")) {
+      this.setState({
+        isLoggedIn: true
+      });
+    } else {
+      this.setState({
+        isLoggedIn: false
+      });
+    }
   };
 
   render() {
@@ -29,19 +53,43 @@ class App extends React.Component {
       <>
         <Router>
           <Menu inverted attached>
-            <Menu.Item as={Link} to="/" exact>
+            <Menu.Item as={Link} to="/" exact="true">
               <h3>Kuding</h3>
             </Menu.Item>
-            <Menu.Item as={Link} name="List Task" to="/" />
-            <Menu.Item as={Link} name="Create Task" to="/createtask" />
+            <Menu.Item
+              color="red"
+              as={Link}
+              name="List Task"
+              to="/"
+              onClick={() => this.handleMenuClick("List Task")}
+              active={this.state.activeItem === "List Task"}
+            />
+            <Menu.Item
+              color="red"
+              as={Link}
+              name="Create Task"
+              to="/createtask"
+              onClick={() => this.handleMenuClick("Create Task")}
+              active={this.state.activeItem === "Create Task"}
+            />
             <Menu.Menu position="right">
-              <Menu.Item
-                name="logout"
-                as={Link}
-                to="/login"
-                active={this.state.activeItem === "logout"}
-                onClick={this.handleLogoutClick}
-              />
+              {this.state.isLoggedIn === false ? (
+                <Menu.Item
+                  name="login"
+                  as={Link}
+                  to="/login"
+                  active={this.state.activeItem === "login"}
+                  onClick={() => this.handleMenuClick("login")}
+                />
+              ) : (
+                <Menu.Item
+                  name="logout"
+                  as={Link}
+                  to="/login"
+                  active={this.state.activeItem === "logout"}
+                  onClick={this.handleLogoutClick}
+                />
+              )}
             </Menu.Menu>
           </Menu>
 

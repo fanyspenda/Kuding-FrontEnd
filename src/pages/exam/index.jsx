@@ -38,6 +38,11 @@ export default class Exam extends React.Component {
         `https://kuding-backend.herokuapp.com/task/${this.props.location.state.task._id}/submit`,
         {
           script: this.state.script
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`
+          }
         }
       )
       .then(res => {
