@@ -13,7 +13,7 @@ const Input = props => {
       <Field
         {...rest}
         render={fieldProps => (
-          <SemanticInput {...fieldProps.field} type={type} />
+          <SemanticInput {...fieldProps.field} type={type} fluid />
         )}
       />
       <FormikErrorMessage

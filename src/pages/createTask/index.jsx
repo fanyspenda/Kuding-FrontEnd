@@ -47,11 +47,19 @@ export default class CreateTask extends React.Component {
       isLoading: true
     });
     axios
-      .post("https://kuding-backend.herokuapp.com/task", {
-        title: this.state.title,
-        description: this.state.description,
-        test_cases: this.state.test_cases
-      })
+      .post(
+        "https://kuding-backend.herokuapp.com/task",
+        {
+          title: this.state.title,
+          description: this.state.description,
+          test_cases: this.state.test_cases
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+      )
       .then(() => {
         this.setState({
           isLoading: false
