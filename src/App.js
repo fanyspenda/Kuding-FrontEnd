@@ -5,6 +5,7 @@ import CreateTask from "./pages/createTask";
 import ListTask from "./pages/listTask";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Login from "./pages/login";
 
 class App extends React.Component {
   state = {
@@ -17,6 +18,10 @@ class App extends React.Component {
     if (this.state.activeItem === true) {
       return <CreateTask />;
     }
+  };
+
+  handleLogoutClick = () => {
+    localStorage.removeItem("token");
   };
 
   render() {
@@ -32,7 +37,10 @@ class App extends React.Component {
             <Menu.Menu position="right">
               <Menu.Item
                 name="logout"
+                as={Link}
+                to="/login"
                 active={this.state.activeItem === "logout"}
+                onClick={this.handleLogoutClick}
               />
             </Menu.Menu>
           </Menu>
@@ -40,6 +48,7 @@ class App extends React.Component {
           <Route path="/" exact component={ListTask} />
           <Route path="/createtask" component={CreateTask} />
           <Route path="/dotask" component={Exam} />
+          <Route path="/login" component={Login} />
         </Router>
       </>
     );
