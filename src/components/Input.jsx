@@ -18,7 +18,11 @@ const Input = props => {
       />
       <FormikErrorMessage
         {...rest}
-        render={error => <SemanticLabel color="red">{error}</SemanticLabel>}
+        render={error => (
+          <SemanticLabel basic color="red" pointing="above">
+            {error}
+          </SemanticLabel>
+        )}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { Segment, Button, Table, Icon } from "semantic-ui-react";
+import { Segment, Button, Table, Icon, Card } from "semantic-ui-react";
 import axios from "axios";
 
 export default class ListTask extends React.Component {
@@ -57,52 +57,34 @@ export default class ListTask extends React.Component {
   render() {
     return (
       <Segment loading={this.state.isLoading} basic>
-        <Table celled striped>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell colSpan="4">
-                <h1>Tasks</h1>
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          {this.state.tasks.map((task, index) => (
-            <Table.Body key={task._id}>
-              <Table.Row>
-                <Table.Cell collapsing>
-                  <Icon name="file code" />
-                  <b>{task.title}</b>
-                </Table.Cell>
-                <Table.Cell collapsing>
-                  <p
-                    style={{
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                      width: "400px"
-                    }}
-                  >{`${task.description}`}</p>
-                </Table.Cell>
-                <Table.Cell collapsing>
-                  <Button
-                    basic
-                    onClick={() => this.handleDeleteClick(task._id)}
-                    color="red"
-                  >
-                    Delete
-                  </Button>
-                </Table.Cell>
-                <Table.Cell collapsing>
-                  <Button
-                    basic
-                    onClick={() => this.handleSolveClick(task)}
-                    color="green"
-                  >
-                    Solve
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          ))}
-        </Table>
+        <h1>Tasks</h1>
+        {this.state.tasks.map((task, index) => (
+          <Card key={task._id} fluid>
+            <Card.Content>
+              <Card.Header>{`Task ${index + 1}`}</Card.Header>
+              <Card.Description>{task.description}</Card.Description>
+            </Card.Content>
+            <Card.Content extra>
+              <Button
+                basic
+                color="green"
+                onClick={() => this.handleSolveClick(task)}
+              >
+                Solve
+              </Button>
+              <Button
+                basic
+                color="red"
+                onClick={() => this.handleDeleteClick(task._id)}
+              >
+                Delete
+              </Button>
+            </Card.Content>
+            {/* <Card.Content>
+              {!task.user ? task.user.username : "Anonim"}
+            </Card.Content> */}
+          </Card>
+        ))}
       </Segment>
     );
   }
