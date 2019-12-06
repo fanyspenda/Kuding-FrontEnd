@@ -6,6 +6,7 @@ import ListTask from "./pages/listTask";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Login from "./pages/login";
+import Register from "./pages/register";
 
 class App extends React.Component {
   state = {
@@ -73,6 +74,14 @@ class App extends React.Component {
               active={this.state.activeItem === "Create Task"}
             />
             <Menu.Menu position="right">
+              <Menu.Item
+                color="red"
+                name="register"
+                as={Link}
+                to="/register"
+                active={this.state.activeItem === "register"}
+                onClick={() => this.handleMenuClick("register")}
+              />
               {this.state.isLoggedIn === false ? (
                 <Menu.Item
                   name="login"
@@ -97,6 +106,7 @@ class App extends React.Component {
           <Route path="/createtask" component={CreateTask} />
           <Route path="/dotask" component={Exam} />
           <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
         </Router>
       </>
     );
