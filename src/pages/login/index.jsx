@@ -1,89 +1,81 @@
-import React from "react";
-import { Segment, Card, Button } from "semantic-ui-react";
-import { Formik, Form } from "formik";
-import axios from "axios";
-import Input from "../../components/Input";
-import * as yup from "yup";
+import React from 'react'
+import { Segment, Card, Button, Header, FormGroup } from 'semantic-ui-react'
+import { Formik, Form } from 'formik'
+import axios from 'axios'
+import Input from '../../components/Input'
+import * as yup from 'yup'
+import { Consumer } from '../../App'
+
+const validationSchema = yup.object().shape({
+  username: yup.string().required(),
+  password: yup.string().required()
+})
 
 export default class Login extends React.Component {
-  login = (username, password) => {
+  handleSubmit = ({ username, password }, setToken) => {
     axios
-      .post("https://kuding-backend.herokuapp.com/user/login", {
+      .post('https://kuding-backend.herokuapp.com/user/login', {
         username,
         password
       })
       .then(res => {
         if (res.data.success) {
-          localStorage.setItem("token", res.data.token);
-          this.props.history.push("/");
+          setToken(res.data.token)
+          this.props.history.push('/')
         } else {
-          alert("username/password salah!");
+          alert('username atau password salah!')
         }
-      });
-  };
+      })
+  }
 
   render() {
-    const loginSchema = yup.object().shape({
-      username: yup.string().required("Username Harus Diisi!"),
-      password: yup.string().required("Password Harus Diisi!")
-    });
-
     return (
-      <Formik
-        initialValues={{ username: "", password: "" }}
-        validationSchema={loginSchema}
-        // validate={values => {
-        //   const errors = {};
-
-        //   if (values.username === "") {
-        //     errors.username = "username kosong!";
-        //   } else if (values.password === "") {
-        //     errors.password = "password belum diisi!";
-        //   }
-        //   return errors;
-        // }}
-        onSubmit={values => this.login(values.username, values.password)}
-      >
-        {({ isSubmitting }) => (
-          <Segment basic>
-            <h1 style={{ textAlign: "center" }}>Kuding</h1>
-            <h2 style={{ textAlign: "center" }}>Coding Without Borders</h2>
-            <br />
-            <br />
-            <Card centered>
+      <Consumer>
+        {({ setToken }) => (
+          <Formik
+            initialValues={{ username: '', password: '' }}
+            validationSchema={validationSchema}
+            onSubmit={values => this.handleSubmit(values, setToken)}
+          >
+            {({ isSubmitting }) => (
               <Segment basic>
                 <Form>
-                  <div>
-                    <label>
-                      <b>Username</b>
-                    </label>
-                    <br />
-                    <Input name="username" type="text" />
-                  </div>
-                  <br />
-                  <div>
-                    <label>
-                      <b>Password</b>
-                    </label>
-                    <br />
-                    <Input name="password" type="password" />
-                  </div>
-                  <br />
-                  <br />
-                  <Button
-                    fluid
-                    type="submit"
-                    disabled={isSubmitting}
-                    color="green"
-                  >
-                    Submit
-                  </Button>
+                  <Card centered>
+                    <Card.Content>
+                      <Header
+                        content="Kuding"
+                        subheader="Coding without border"
+                        textAlign="center"
+                      />
+                    </Card.Content>
+                    <Card.Content>
+                      <FormGroup>
+                        <h5>Username</h5>
+                        <Input name="username" type="text" />
+                      </FormGroup>
+                      <br />
+                      <FormGroup>
+                        <h5>Password</h5>
+                        <Input name="password" type="password" />
+                      </FormGroup>
+                    </Card.Content>
+                    <Card.Content>
+                      <Button
+                        fluid
+                        type="submit"
+                        disabled={isSubmitting}
+                        color="green"
+                      >
+                        Submit
+                      </Button>
+                    </Card.Content>
+                  </Card>
                 </Form>
               </Segment>
-            </Card>
-          </Segment>
+            )}
+          </Formik>
         )}
-      </Formik>
-    );
+      </Consumer>
+    )
   }
 }

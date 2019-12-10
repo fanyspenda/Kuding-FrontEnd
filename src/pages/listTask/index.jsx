@@ -1,12 +1,16 @@
 import React from 'react'
 import { Segment, Button, Card, Header } from 'semantic-ui-react'
 import axios from 'axios'
-import jwt from 'jsonwebtoken'
+import { Consumer } from '../../App'
 
 export default class ListTask extends React.Component {
   state = {
     tasks: [],
     isLoading: true
+  }
+
+  componentDidMount() {
+    this.getList()
   }
 
   getList = () => {
@@ -31,10 +35,6 @@ export default class ListTask extends React.Component {
       })
   }
 
-  componentDidMount() {
-    this.getList()
-  }
-
   handleDeleteClick = _id => {
     this.setState({
       isLoading: true
@@ -56,43 +56,47 @@ export default class ListTask extends React.Component {
   }
 
   render() {
-    const token = localStorage.getItem('token')
-    const { username } = jwt.decode(token)
-    console.log(username)
-
     return (
-      <Segment loading={this.state.isLoading} basic>
-        <h1>Tasks</h1>
-        {this.state.tasks.map((task, index) => (
-          <Card key={task._id} fluid>
-            <Card.Content>
-              <Card.Header>{`Task ${index + 1}`}</Card.Header>
-              <Card.Description>{task.description}</Card.Description>
-            </Card.Content>
-            <Card.Content>
-              <Header icon="user" content={task.user.username} size="tiny" />
-            </Card.Content>
-            <Card.Content extra>
-              <Button
-                basic
-                color="green"
-                onClick={() => this.handleSolveClick(task)}
-              >
-                Solve
-              </Button>
-              {username === task.user.username && (
-                <Button
-                  basic
-                  color="red"
-                  onClick={() => this.handleDeleteClick(task._id)}
-                >
-                  Delete
-                </Button>
-              )}
-            </Card.Content>
-          </Card>
-        ))}
-      </Segment>
+      <Consumer>
+        {({ username }) => (
+          <Segment loading={this.state.isLoading} basic>
+            <h1>Tasks</h1>
+            {this.state.tasks.map((task, index) => (
+              <Card key={task._id} fluid>
+                <Card.Content>
+                  <Card.Header>{`Task ${index + 1}`}</Card.Header>
+                  <Card.Description>{task.description}</Card.Description>
+                </Card.Content>
+                <Card.Content>
+                  <Header
+                    icon="user"
+                    content={task.user.username}
+                    size="tiny"
+                  />
+                </Card.Content>
+                <Card.Content extra>
+                  <Button
+                    basic
+                    color="green"
+                    onClick={() => this.handleSolveClick(task)}
+                  >
+                    Solve
+                  </Button>
+                  {username === task.user.username && (
+                    <Button
+                      basic
+                      color="red"
+                      onClick={() => this.handleDeleteClick(task._id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </Card.Content>
+              </Card>
+            ))}
+          </Segment>
+        )}
+      </Consumer>
     )
   }
 }

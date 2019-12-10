@@ -1,116 +1,120 @@
-import React from "react";
-import { Menu } from "semantic-ui-react";
-import Exam from "./pages/exam";
-import CreateTask from "./pages/createTask";
-import ListTask from "./pages/listTask";
+import React, { createContext } from 'react'
+import { Menu } from 'semantic-ui-react'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import jwt from 'jsonwebtoken'
+import Login from './pages/login'
+import Register from './pages/register'
+import Exam from './pages/exam'
+import CreateTask from './pages/createTask'
+import ListTask from './pages/listTask'
+import PrivateRoute from './components/PrivateRoute'
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Login from "./pages/login";
-import Register from "./pages/register";
+const { Provider, Consumer } = createContext()
 
 class App extends React.Component {
   state = {
-    activeItem: "",
-    isLoggedIn: null
-  };
+    activeName: '',
+    token: localStorage.getItem('token')
+  }
 
-  componentDidMount = () => {
-    let checkLogin = setInterval(() => {
-      this.checkToken();
-      console.log("login dicheck");
-      if (this.state.isLoggedIn === true) {
-        clearInterval(checkLogin);
-        console.log("checking dihentikan");
-      }
-    }, 1000);
-  };
+  isMenuActive = name => {
+    return this.state.activeName === name
+  }
 
   handleMenuClick = name => {
-    this.setState({ activeItem: name });
-  };
+    this.setState({ activeName: name })
+  }
 
-  handleLogoutClick = () => {
-    localStorage.removeItem("token");
-    this.setState({
-      isLoggedIn: false
-    });
-    this.componentDidMount();
-  };
+  handleLogout = () => {
+    localStorage.removeItem('token')
+    this.setState({ token: null })
+  }
 
-  checkToken = () => {
-    if (localStorage.getItem("token")) {
-      this.setState({
-        isLoggedIn: true
-      });
-    } else {
-      this.setState({
-        isLoggedIn: false
-      });
-    }
-  };
+  setToken = token => {
+    localStorage.setItem('token', token)
+    this.setState({ token })
+  }
+
+  isLoggedIn = () => {
+    return this.state.token !== null
+  }
+
+  getUsername = () => {
+    return this.state.token ? jwt.decode(this.state.token).username : ''
+  }
 
   render() {
+    const providerValue = {
+      token: this.state.token,
+      setToken: this.setToken,
+      isLoggedIn: this.isLoggedIn,
+      username: this.getUsername()
+    }
+
     return (
-      <>
+      <Provider value={providerValue}>
         <Router>
           <Menu inverted attached>
             <Menu.Item as={Link} to="/" exact="true">
               <h3>Kuding</h3>
             </Menu.Item>
-            <Menu.Item
-              color="red"
-              as={Link}
-              name="List Task"
-              to="/"
-              onClick={() => this.handleMenuClick("List Task")}
-              active={this.state.activeItem === "List Task"}
-            />
-            <Menu.Item
-              color="red"
-              as={Link}
-              name="Create Task"
-              to="/createtask"
-              onClick={() => this.handleMenuClick("Create Task")}
-              active={this.state.activeItem === "Create Task"}
-            />
-            <Menu.Menu position="right">
-              <Menu.Item
-                color="red"
-                name="register"
-                as={Link}
-                to="/register"
-                active={this.state.activeItem === "register"}
-                onClick={() => this.handleMenuClick("register")}
-              />
-              {this.state.isLoggedIn === false ? (
+
+            {this.isLoggedIn() ? (
+              <>
+                <Menu.Item
+                  as={Link}
+                  name="List Task"
+                  to="/"
+                  onClick={() => this.handleMenuClick('List Task')}
+                  active={this.isMenuActive('List Task')}
+                />
+                <Menu.Item
+                  as={Link}
+                  name="Create Task"
+                  to="/createtask"
+                  onClick={() => this.handleMenuClick('Create Task')}
+                  active={this.isMenuActive('Create Task')}
+                />
+                <Menu.Menu position="right">
+                  <Menu.Item name={this.getUsername()} />
+                  <Menu.Item
+                    name="logout"
+                    as={Link}
+                    active={this.isMenuActive('logout')}
+                    onClick={this.handleLogout}
+                  />
+                </Menu.Menu>
+              </>
+            ) : (
+              <Menu.Menu position="right">
                 <Menu.Item
                   name="login"
                   as={Link}
                   to="/login"
-                  active={this.state.activeItem === "login"}
-                  onClick={() => this.handleMenuClick("login")}
+                  onClick={() => this.handleMenuClick('login')}
+                  active={this.isMenuActive('login')}
                 />
-              ) : (
                 <Menu.Item
-                  name="logout"
+                  name="register"
                   as={Link}
-                  to="/login"
-                  active={this.state.activeItem === "logout"}
-                  onClick={this.handleLogoutClick}
+                  to="/register"
+                  onClick={() => this.handleMenuClick('register')}
+                  active={this.isMenuActive('register')}
                 />
-              )}
-            </Menu.Menu>
+              </Menu.Menu>
+            )}
           </Menu>
 
-          <Route path="/" exact component={ListTask} />
-          <Route path="/createtask" component={CreateTask} />
-          <Route path="/dotask" component={Exam} />
+          <PrivateRoute path="/" exact component={ListTask} />
+          <PrivateRoute path="/createtask" component={CreateTask} />
+          <PrivateRoute path="/dotask" component={Exam} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
         </Router>
-      </>
-    );
+      </Provider>
+    )
   }
 }
 
-export default App;
+export { Consumer }
+export default App
