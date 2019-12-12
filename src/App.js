@@ -1,10 +1,11 @@
 import React from "react";
 import { Menu } from "semantic-ui-react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Tour from "reactour";
+
 import Exam from "./pages/exam";
 import CreateTask from "./pages/createTask";
 import ListTask from "./pages/listTask";
-
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 
@@ -74,22 +75,24 @@ class App extends React.Component {
               active={this.state.activeItem === "Create Task"}
             />
             <Menu.Menu position="right">
-              <Menu.Item
-                color="red"
-                name="register"
-                as={Link}
-                to="/register"
-                active={this.state.activeItem === "register"}
-                onClick={() => this.handleMenuClick("register")}
-              />
               {this.state.isLoggedIn === false ? (
-                <Menu.Item
-                  name="login"
-                  as={Link}
-                  to="/login"
-                  active={this.state.activeItem === "login"}
-                  onClick={() => this.handleMenuClick("login")}
-                />
+                <>
+                  <Menu.Item
+                    color="red"
+                    name="register"
+                    as={Link}
+                    to="/register"
+                    active={this.state.activeItem === "register"}
+                    onClick={() => this.handleMenuClick("register")}
+                  />
+                  <Menu.Item
+                    name="login"
+                    as={Link}
+                    to="/login"
+                    active={this.state.activeItem === "login"}
+                    onClick={() => this.handleMenuClick("login")}
+                  />
+                </>
               ) : (
                 <Menu.Item
                   name="logout"
