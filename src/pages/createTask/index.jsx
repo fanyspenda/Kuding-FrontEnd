@@ -1,54 +1,42 @@
-import React from "react";
-import axios from "axios";
+/*
+ * Component that used to create task
+ */
 
-import { Grid, Button, Form, Segment, Input, Label } from "semantic-ui-react";
+import React from 'react'
+import axios from 'axios'
+
+import { Grid, Button, Form, Segment, Input, Label } from 'semantic-ui-react'
 
 export default class CreateTask extends React.Component {
   state = {
-    title: "",
-    description: "",
-    test_cases: [
-      {
-        input: 0,
-        expected_output: 0
-      }
-    ],
+    title: '',
+    description: '',
+    test_cases: [],
     isLoading: false
-  };
+  }
 
-  componentWillMount = () => {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/login");
-    }
-  };
+  // handle add test case event
+  handleAddTestCase = () => {
+    const { test_cases } = this.state
+    test_cases.push({ input: 10, expected_output: 10 })
+    this.setState({ test_cases })
+  }
 
-  addTestCase = () => {
-    let newTestCase = {
-      input: 10,
-      expected_output: 10
-    };
-    let totalTestCase = this.state.test_cases;
-    totalTestCase.push(newTestCase);
-    this.setState({
-      test_cases: totalTestCase
-    });
-  };
+  // handle remove test case event
+  handleRemoveTestCase = () => {
+    let { test_cases } = this.state
+    test_cases.pop()
+    this.setState({ test_cases })
+  }
 
-  removeTestCase = () => {
-    let removedTestCase = this.state.test_cases;
-    removedTestCase.pop();
-    this.setState({
-      test_cases: removedTestCase
-    });
-  };
-
+  // handle submit task
   handleSubmit = () => {
     this.setState({
       isLoading: true
-    });
+    })
     axios
       .post(
-        "https://kuding-backend.herokuapp.com/task",
+        'https://kuding-backend.herokuapp.com/task',
         {
           title: this.state.title,
           description: this.state.description,
@@ -56,47 +44,48 @@ export default class CreateTask extends React.Component {
         },
         {
           headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`
+            authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }
       )
-      .then(() => {
-        this.setState({
-          isLoading: false
-        });
-        alert("Pesan berhasil dikirim!");
-      });
-  };
+      .then(() => alert('Task created'))
+      .finally(() => this.setState({ isLoading: false }))
+  }
 
+  // handle input change event
   handleInputChange = (index, event) => {
-    const { test_cases } = this.state;
-    test_cases[index].input = event.target.value;
-    this.setState({ test_cases });
-  };
+    const { test_cases } = this.state
+    test_cases[index].input = event.target.value
+    this.setState({ test_cases })
+  }
 
+  // handle expected output change event
   handleExpectedOutputChange = (index, event) => {
-    const { test_cases } = this.state;
-    test_cases[index].expected_output = event.target.value;
-    this.setState({ test_cases });
-  };
+    const { test_cases } = this.state
+    test_cases[index].expected_output = event.target.value
+    this.setState({ test_cases })
+  }
 
+  // handle description change
   handleDescriptionChange = event => {
-    this.setState({ description: event.target.value });
-  };
+    this.setState({ description: event.target.value })
+  }
 
+  // handle title change event
   handleTitleChange = event => {
-    this.setState({ title: event.target.value });
-  };
+    this.setState({ title: event.target.value })
+  }
 
+  // render component
   render() {
     return (
       <>
         <Segment basic relaxed loading={this.state.isLoading}>
-          <h2>Buat Soal Baru</h2>
+          <h2>Create New Task</h2>
           <Segment>
             <Form>
               <Form.Field>
-                <Label>Judul Soal</Label>
+                <Label>Title</Label>
                 <Input
                   type="text"
                   value={this.state.title}
@@ -109,7 +98,7 @@ export default class CreateTask extends React.Component {
           <Segment>
             <Form>
               <Form.Field>
-                <Label>Deskripsi</Label>
+                <Label>Description</Label>
                 <Input
                   type="text"
                   value={this.state.description}
@@ -126,12 +115,20 @@ export default class CreateTask extends React.Component {
                   <h2>Test Case</h2>
                 </Grid.Column>
                 <Grid.Column textAlign="right">
-                  {this.state.test_cases.length > 1 ? (
-                    <Button circular color="red" onClick={this.removeTestCase}>
+                  {this.state.test_cases.length > 0 && (
+                    <Button
+                      circular
+                      color="red"
+                      onClick={this.handleRemoveTestCase}
+                    >
                       -
                     </Button>
-                  ) : null}
-                  <Button circular color="blue" onClick={this.addTestCase}>
+                  )}
+                  <Button
+                    circular
+                    color="blue"
+                    onClick={this.handleAddTestCase}
+                  >
                     +
                   </Button>
                 </Grid.Column>
@@ -176,7 +173,7 @@ export default class CreateTask extends React.Component {
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
-              );
+              )
             })}
           </Segment>
           <Segment basic>
@@ -192,6 +189,6 @@ export default class CreateTask extends React.Component {
           </Segment>
         </Segment>
       </>
-    );
+    )
   }
 }

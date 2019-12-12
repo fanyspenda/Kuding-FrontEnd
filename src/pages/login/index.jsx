@@ -1,3 +1,7 @@
+/*
+ * Component that used to logging in user
+ */
+
 import React from 'react'
 import { Segment, Card, Button, Header, FormGroup } from 'semantic-ui-react'
 import { Formik, Form } from 'formik'
@@ -12,6 +16,7 @@ const validationSchema = yup.object().shape({
 })
 
 export default class Login extends React.Component {
+  // handle login submit event
   handleSubmit = ({ username, password }, setToken) => {
     axios
       .post('https://kuding-backend.herokuapp.com/user/login', {
@@ -28,6 +33,7 @@ export default class Login extends React.Component {
       })
   }
 
+  // render component
   render() {
     return (
       <Consumer>
