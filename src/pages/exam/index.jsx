@@ -1,38 +1,33 @@
-import React from "react";
-import axios from "axios";
+/*
+ * Component that used to solve task
+ */
 
-import AceEditor from "react-ace";
-import "brace/mode/javascript";
-import "brace/theme/monokai";
-import "brace/ext/language_tools";
+import React from 'react'
+import axios from 'axios'
 
-import {
-  Grid,
-  Button,
-  Form,
-  Segment,
-  Input,
-  Dropdown
-} from "semantic-ui-react";
+import AceEditor from 'react-ace'
+import 'brace/mode/javascript'
+import 'brace/theme/monokai'
+import 'brace/ext/language_tools'
+
+import { Grid, Button, Form, Segment, Input, Dropdown } from 'semantic-ui-react'
 
 export default class Exam extends React.Component {
   state = {
-    script: "",
+    script: '',
     selectedTestCase: null,
     testCases: this.props.location.state.task.test_cases,
     isLoading: false
-  };
+  }
 
+  // handle change event
   handleChange = value => {
-    this.setState({
-      script: value
-    });
-  };
+    this.setState({ script: value })
+  }
 
+  // handle submit event
   handleSubmit = () => {
-    this.setState({
-      isLoading: true
-    });
+    this.setState({ isLoading: true })
     axios
       .post(
         `https://kuding-backend.herokuapp.com/task/${this.props.location.state.task._id}/submit`,
@@ -41,7 +36,7 @@ export default class Exam extends React.Component {
         },
         {
           headers: {
-            authorization: `Bearer ${localStorage.getItem("token")}`
+            authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }
       )
@@ -49,36 +44,36 @@ export default class Exam extends React.Component {
         this.setState({
           isLoading: true,
           testCases: res.data
-        });
+        })
       })
-      .finally(() => {
-        this.setState({
-          isLoading: false
-        });
-      });
-  };
+      .finally(() => this.setState({ isLoading: false }))
+  }
 
+  // handle dropdown change event
   handleDropdownChange = (e, data) => {
     this.setState({
       selectedTestCase: this.state.testCases[data.value]
-    });
-  };
+    })
+  }
 
-  isTestCaseError = testCase => testCase.expected_output !== testCase.output;
+  // check is test case error
+  isTestCaseError = testCase => testCase.expected_output !== testCase.output
 
+  // render option of dropdown
   renderOptions = () => {
     return this.state.testCases.map((testCase, index) => ({
       text: `test case ${index + 1}`,
       value: index,
       label: {
-        color: this.isTestCaseError(testCase) ? "red" : "green"
+        color: this.isTestCaseError(testCase) ? 'red' : 'green'
       }
-    }));
-  };
+    }))
+  }
 
+  // render component
   render() {
-    const { script, selectedTestCase, isLoading } = this.state;
-    const { task } = this.props.location.state;
+    const { script, selectedTestCase, isLoading } = this.state
+    const { task } = this.props.location.state
     return (
       <Grid columns="2" divided relaxed>
         <Grid.Row>
@@ -169,6 +164,6 @@ export default class Exam extends React.Component {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    );
+    )
   }
 }

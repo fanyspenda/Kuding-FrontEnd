@@ -1,3 +1,7 @@
+/*
+ * Component that wrap all child component
+ */
+
 import React, { createContext } from 'react'
 import { Menu } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
@@ -17,32 +21,39 @@ class App extends React.Component {
     token: localStorage.getItem('token')
   }
 
+  // check if menu is active
   isMenuActive = name => {
     return this.state.activeName === name
   }
 
+  // handling menu on click event
   handleMenuClick = name => {
     this.setState({ activeName: name })
   }
 
+  // handling logout event
   handleLogout = () => {
     localStorage.removeItem('token')
     this.setState({ token: null })
   }
 
+  // set token value
   setToken = token => {
     localStorage.setItem('token', token)
     this.setState({ token })
   }
 
+  // check is user already logged in
   isLoggedIn = () => {
     return this.state.token !== null
   }
 
+  // get username from token
   getUsername = () => {
     return this.state.token ? jwt.decode(this.state.token).username : ''
   }
 
+  // render component
   render() {
     const providerValue = {
       token: this.state.token,

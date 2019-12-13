@@ -1,3 +1,7 @@
+/*
+ * Component that use to show list task
+ */
+
 import React from 'react'
 import { Segment, Button, Card, Header } from 'semantic-ui-react'
 import axios from 'axios'
@@ -9,10 +13,12 @@ export default class ListTask extends React.Component {
     isLoading: true
   }
 
+  // do something on component did mount
   componentDidMount() {
     this.getList()
   }
 
+  // get list of task
   getList = () => {
     this.setState({
       isLoading: true
@@ -23,18 +29,11 @@ export default class ListTask extends React.Component {
           authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-      .then(res => {
-        this.setState({
-          tasks: res.data
-        })
-      })
-      .finally(() => {
-        this.setState({
-          isLoading: false
-        })
-      })
+      .then(res => this.setState({ tasks: res.data }))
+      .finally(() => this.setState({ isLoading: false }))
   }
 
+  // handle delete click event
   handleDeleteClick = _id => {
     this.setState({
       isLoading: true
@@ -45,16 +44,18 @@ export default class ListTask extends React.Component {
           authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-      .finally(() => {
+      .then(() => {
         this.getList()
         alert('data berhasil dihapus!')
       })
   }
 
+  // handle solve click event
   handleSolveClick = task => {
     this.props.history.push('/dotask', { task })
   }
 
+  // render component
   render() {
     return (
       <Consumer>
