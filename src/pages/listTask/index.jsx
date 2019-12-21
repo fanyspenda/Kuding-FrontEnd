@@ -1,59 +1,55 @@
-/*
- * Component that use to show list task
- */
-
-import React from 'react'
-import { Segment, Button, Card, Header } from 'semantic-ui-react'
-import axios from 'axios'
-import { Consumer } from '../../App'
+import React from "react";
+import { Segment, Button, Card, Header } from "semantic-ui-react";
+import axios from "axios";
+import { Consumer } from "../../App";
 
 export default class ListTask extends React.Component {
   state = {
     tasks: [],
     isLoading: true
-  }
+  };
 
   // do something on component did mount
   componentDidMount() {
-    this.getList()
+    this.getList();
   }
 
   // get list of task
   getList = () => {
     this.setState({
       isLoading: true
-    })
+    });
     axios
-      .get('https://kuding-backend.herokuapp.com/task', {
+      .get("https://kuding-backend.herokuapp.com/task", {
         headers: {
-          authorization: `Bearer ${localStorage.getItem('token')}`
+          authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })
       .then(res => this.setState({ tasks: res.data }))
-      .finally(() => this.setState({ isLoading: false }))
-  }
+      .finally(() => this.setState({ isLoading: false }));
+  };
 
   // handle delete click event
   handleDeleteClick = _id => {
     this.setState({
       isLoading: true
-    })
+    });
     axios
-      .delete('https://kuding-backend.herokuapp.com/task/' + _id, {
+      .delete("https://kuding-backend.herokuapp.com/task/" + _id, {
         headers: {
-          authorization: `Bearer ${localStorage.getItem('token')}`
+          authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })
       .then(() => {
-        this.getList()
-        alert('data berhasil dihapus!')
-      })
-  }
+        this.getList();
+        alert("data berhasil dihapus!");
+      });
+  };
 
   // handle solve click event
   handleSolveClick = task => {
-    this.props.history.push('/dotask', { task })
-  }
+    this.props.history.push("/dotask", { task });
+  };
 
   // render component
   render() {
@@ -98,6 +94,6 @@ export default class ListTask extends React.Component {
           </Segment>
         )}
       </Consumer>
-    )
+    );
   }
 }

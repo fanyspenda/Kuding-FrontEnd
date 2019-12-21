@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/reactour": "^1.13.1",
     "axios": "^0.19.0",
     "brace": "^0.11.1",
     "formik": "^2.0.3",
@@ -12,6 +13,7 @@
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.1.2",
+    "reactour": "^1.15.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
     "styled-components": "^4.3.2",

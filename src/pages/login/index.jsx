@@ -2,36 +2,36 @@
  * Component that used to logging in user
  */
 
-import React from 'react'
-import { Segment, Card, Button, Header, FormGroup } from 'semantic-ui-react'
-import { Formik, Form } from 'formik'
-import axios from 'axios'
-import Input from '../../components/Input'
-import * as yup from 'yup'
-import { Consumer } from '../../App'
+import React from "react";
+import { Segment, Card, Button, Header, FormGroup } from "semantic-ui-react";
+import { Formik, Form } from "formik";
+import axios from "axios";
+import Input from "../../components/Input";
+import * as yup from "yup";
+import { Consumer } from "../../App";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required(),
   password: yup.string().required()
-})
+});
 
 export default class Login extends React.Component {
   // handle login submit event
   handleSubmit = ({ username, password }, setToken) => {
     axios
-      .post('https://kuding-backend.herokuapp.com/user/login', {
+      .post("https://kuding-backend.herokuapp.com/user/login", {
         username,
         password
       })
       .then(res => {
         if (res.data.success) {
-          setToken(res.data.token)
-          this.props.history.push('/')
+          setToken(res.data.token);
+          this.props.history.push("/");
         } else {
-          alert('username atau password salah!')
+          alert("username atau password salah!");
         }
-      })
-  }
+      });
+  };
 
   // render component
   render() {
@@ -39,7 +39,7 @@ export default class Login extends React.Component {
       <Consumer>
         {({ setToken }) => (
           <Formik
-            initialValues={{ username: '', password: '' }}
+            initialValues={{ username: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={values => this.handleSubmit(values, setToken)}
           >
@@ -82,6 +82,6 @@ export default class Login extends React.Component {
           </Formik>
         )}
       </Consumer>
-    )
+    );
   }
 }
