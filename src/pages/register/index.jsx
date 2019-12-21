@@ -1,3 +1,7 @@
+/*
+ * Component that used to registering user
+ */
+
 import React from 'react'
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
@@ -27,6 +31,7 @@ class Register extends React.Component {
     isLoading: false
   }
 
+  // handle register event
   handleRegister = ({ username, password }) => {
     this.setState({
       isLoading: true
@@ -45,6 +50,7 @@ class Register extends React.Component {
       })
   }
 
+  // rendering component
   render() {
     return (
       <>
